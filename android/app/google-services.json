@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "904696712330",
+    "firebase_url": "https://ecobarrio-2366d-default-rtdb.firebaseio.com",
+    "project_id": "ecobarrio-2366d",
+    "storage_bucket": "ecobarrio-2366d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904696712330:android:ae4abc0b6044767a917173",
+        "android_client_info": {
+          "package_name": "com.example.eco_barrio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1cMsCiDPOIg2sMSWBzXW9-kCw4Gq5JSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
