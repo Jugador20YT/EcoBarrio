@@ -53,10 +53,22 @@ class _UserCalendarScreenState extends State<UserCalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendario (Usuario)'),
+        title: Text(
+          'Calendario',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Consulta los días programados.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           TableCalendar(
             locale: 'es_ES',
             focusedDay: _focusedDay,
@@ -81,16 +93,25 @@ class _UserCalendarScreenState extends State<UserCalendarScreen> {
             },
             calendarStyle: CalendarStyle(
               todayDecoration: BoxDecoration(
-                color: Colors.green,
+                color: Colors.green.shade300,
                 shape: BoxShape.circle,
               ),
               selectedDecoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.blue.shade400,
                 shape: BoxShape.circle,
               ),
               markerDecoration: BoxDecoration(
-                color: Colors.red,
+                color: Colors.red.shade300,
                 shape: BoxShape.circle,
+              ),
+              outsideDaysVisible: false,
+            ),
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextStyle: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
             eventLoader: (day) {
@@ -103,21 +124,40 @@ class _UserCalendarScreenState extends State<UserCalendarScreen> {
             },
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _scheduledDates.length,
-              itemBuilder: (context, index) {
-                DateTime date = _scheduledDates.keys.elementAt(index);
-                String time = _scheduledDates[date]!;
-                return ListTile(
-                  leading: Icon(Icons.event),
-                  title: Text(
-                    _dateFormatter.format(date),
-                    style: TextStyle(fontWeight: FontWeight.bold),
+            child: _scheduledDates.isNotEmpty
+                ? ListView.builder(
+                    itemCount: _scheduledDates.length,
+                    itemBuilder: (context, index) {
+                      DateTime date = _scheduledDates.keys.elementAt(index);
+                      String time = _scheduledDates[date]!;
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: ListTile(
+                          leading: Icon(Icons.event, color: Colors.blue),
+                          title: Text(
+                            _dateFormatter.format(date),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          subtitle: Text('Horario: $time',
+                              style: TextStyle(fontSize: 14)),
+                        ),
+                      );
+                    },
+                  )
+                : Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'No hay horarios programados.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ),
                   ),
-                  subtitle: Text('Horario: $time'),
-                );
-              },
-            ),
           ),
         ],
       ),

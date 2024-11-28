@@ -17,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('locations');
   String _nextPassageMessage = 'Cargando información...';
+  Map<String, String> _camionerosNames =
+      {}; // Map para los nombres de camioneros
 
   @override
   void initState() {
@@ -61,15 +63,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (data != null) {
         Map<String, LatLng> updatedLocations = {};
+        Map<String, String> camioneroNames = {}; // Para guardar los nombres
+
         data.forEach((key, value) {
           updatedLocations[key] = LatLng(
             value['latitude'] as double,
             value['longitude'] as double,
           );
+
+          // Guardar el nombre del camionero
+          camioneroNames[key] = value['name'] as String? ?? 'Desconocido';
         });
 
         setState(() {
           _camionerosLocations = updatedLocations;
+
+          // Actualizar los nombres en los marcadores
+          _camionerosNames = camioneroNames;
         });
       }
     });
@@ -116,10 +126,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Set<Marker> _buildMarkers() {
     // Crear marcadores para todas las ubicaciones de camioneros
     return _camionerosLocations.entries.map((entry) {
+      final String camioneroName = _camionerosNames[entry.key] ?? 'Desconocido';
+
       return Marker(
         markerId: MarkerId(entry.key),
         position: entry.value,
-        infoWindow: InfoWindow(title: 'Camionero: ${entry.key}'),
+        infoWindow: InfoWindow(
+          title: 'Camionero: $camioneroName',
+        ),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       );
     }).toSet();
@@ -129,34 +143,44 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rastreo de Camioneros'),
+        title: Text(
+          'Rastreo de Camioneros',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.teal,
+        centerTitle: true,
+        elevation: 0,
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          Container(
+            width: double.infinity,
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+            color: Colors.teal.shade50,
             child: Text(
               _nextPassageMessage,
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+                fontWeight: FontWeight.w500,
+                color: Colors.teal.shade900,
               ),
               textAlign: TextAlign.center,
             ),
           ),
           Expanded(
-            child: GoogleMap(
-              onMapCreated: (controller) => mapController = controller,
-              initialCameraPosition: CameraPosition(
-                target: _userPosition,
-                zoom: 14.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              child: GoogleMap(
+                onMapCreated: (controller) => mapController = controller,
+                initialCameraPosition: CameraPosition(
+                  target: _userPosition,
+                  zoom: 14.0,
+                ),
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
+                markers: _buildMarkers(),
               ),
-              myLocationEnabled:
-                  true, // Punto azul para la ubicación del usuario
-              myLocationButtonEnabled:
-                  true, // Botón para centrar en la ubicación del usuario
-              markers: _buildMarkers(),
             ),
           ),
         ],

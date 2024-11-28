@@ -7,6 +7,7 @@ import 'home_screen.dart';
 import 'report_screen.dart';
 import 'chat_screen.dart';
 import 'camioneros_screen.dart';
+import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   final String userRole;
@@ -47,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
         ChatScreen(),
         ReportScreen(),
         UserCalendarScreen(), // Calendario para usuarios
-        Center(child: Text('Perfil')),
+        ProfileScreen(),
       ];
     }
   }

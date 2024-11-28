@@ -75,9 +75,11 @@ class _CamionerosScreenState extends State<CamionerosScreen> {
       _currentPosition = LatLng(position.latitude, position.longitude);
 
       if (_isTracking) {
+        // Enviar latitud, longitud y nombre al Realtime Database
         _databaseRef.child(widget.userId).set({
           'latitude': position.latitude,
           'longitude': position.longitude,
+          'name': _name ?? 'Desconocido', // Agregar el nombre del camionero
         });
 
         if (mapController != null) {
